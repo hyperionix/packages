@@ -7,8 +7,7 @@ Hyperionix is a platform for development and deployment of modular OS monitoring
 ## LICENSING
 * Development will always be free.
 * Deploying Hyperionix Endpoint Agents on 10 machines or less is free.
-* All Hyperionix Probes in 
-* Using on a reasonable amount of endpoints for testing is also free.
+* All Probes in this repository are free and open source.
 ## COMPONENTS
 Hyperionix consist of the following components:
 ### Hyperionix Endpoint
