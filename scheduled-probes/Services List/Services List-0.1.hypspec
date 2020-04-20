@@ -1,0 +1,16 @@
+{
+  "name" : "Services List",
+  "ver" : "0.1",
+  "type" : "scheduled",
+  "environment" : {
+    "os" : ["windows"],
+    "os_ver" : {
+      "nt" : [">= 9600"]
+    },
+    "engine" : ["service"],
+    "agent_ver" : [">= 0.4.0"]
+  },
+  "src" : [
+    "Services List.lua"
+  ]
+}
