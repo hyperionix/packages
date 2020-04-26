@@ -1,13 +1,11 @@
 setfenv(1, require "sysapi-ns")
 local Process = require "process.Process"
 
-Packages {
-  "Interprocess Memory Write"
-}
+local package = Package "Interprocess Memory Write"
 
 Case("mycase") {
   case = function()
-    loadPackage("Interprocess Memory Write")
+    package:load()
 
     local p = Process.run("notepad.exe")
     if p then
@@ -20,7 +18,7 @@ Case("mycase") {
       p:terminate()
     end
 
-    unloadPackage("Interprocess Memory Write")
+    package:unload()
 
     local events = fetchEvents("Interprocess Memory Write")
     assert(#events ~= 0)
