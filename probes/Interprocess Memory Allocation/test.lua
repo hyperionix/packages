@@ -1,13 +1,11 @@
 setfenv(1, require "sysapi-ns")
 local Process = require "process.Process"
 
-Packages {
-  "Interprocess Memory Allocation"
-}
+local package = Package "Interprocess Memory Allocation"
 
 Case("mycase") {
   case = function()
-    loadPackage("Interprocess Memory Allocation")
+    package:load()
 
     local p = Process.run("notepad.exe")
     if p then
@@ -19,7 +17,7 @@ Case("mycase") {
       p:terminate()
     end
 
-    unloadPackage("Interprocess Memory Allocation")
+    package:unload()
 
     local events = fetchEvents("Interprocess Memory Allocation")
     assert(#events ~= 0)

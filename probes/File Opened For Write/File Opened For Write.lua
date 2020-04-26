@@ -1,32 +1,32 @@
 setfenv(1, require "sysapi-ns")
 local ProcessEntity = hp.ProcessEntity
 local FileEntity = hp.FileEntity
+local EventChannel = hp.EventChannel
 local band = bit.band
+local string = string
 
 local function IsWriteAccess(access)
   return band(access, FILE_WRITE_DATA) ~= 0 or band(access, FILE_APPEND_DATA) ~= 0 or band(access, 0x40000000) ~= 0
 end
 
+---@param context EntryExecutionContext
 local function onEntry(context)
-  if IsWriteAccess(context.p.DesiredAccess) then
-    return true
+  if not IsWriteAccess(context.p.DesiredAccess) then
+    context:skipExitHook()
   end
 end
 
+---@param context ExitExecutionContext
 local function onExit(context)
-  if context.r.eax ~= 0 then
-    return
-  end
-
-  return {
-    events = {
-      Event {
-        name = "File Opened For Write",
+  if context.retval == STATUS_SUCCESS then
+    Event(
+      "File Opened For Write",
+      {
         file = FileEntity.fromPath(string.fromUS(context.p.ObjectAttributes.ObjectName)),
         process = ProcessEntity.fromCurrent()
-      }:saveTo("file", "splunk")
-    }
-  }
+      }
+    ):send(EventChannel.file, EventChannel.splunk)
+  end
 end
 
 Probe {
