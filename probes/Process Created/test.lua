@@ -1,13 +1,11 @@
 setfenv(1, require "sysapi-ns")
 local Process = require "process.Process"
 
-Packages {
-  "Process Created"
-}
+local package = Package "Process Created"
 
 Case("mycase") {
   case = function()
-    loadPackage("Process Created")
+    package:load()
 
     local p = Process.run("notepad.exe")
     if p then
@@ -16,6 +14,6 @@ Case("mycase") {
       assert(#events ~= 0)
     end
 
-    unloadPackage("Process Created")
+    package:unload()
   end
 }
