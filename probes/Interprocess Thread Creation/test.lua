@@ -2,13 +2,11 @@ setfenv(1, require "sysapi-ns")
 local Process = require "process.Process"
 local bb = require "utils.bytebuf"
 
-Packages {
-  "Interprocess Thread Creation"
-}
+local package = Package "Interprocess Thread Creation"
 
 Case("mycase") {
   case = function()
-    loadPackage("Interprocess Thread Creation")
+    package:load()
 
     local p = Process.run("notepad.exe")
     if p then
@@ -21,7 +19,7 @@ Case("mycase") {
       p:terminate()
     end
 
-    unloadPackage("Interprocess Thread Creation")
+    package:unload()
 
     local events = fetchEvents("Interprocess Thread Creation")
     assert(#events ~= 0)

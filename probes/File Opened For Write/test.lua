@@ -2,17 +2,16 @@ setfenv(1, require "sysapi-ns")
 local fs = require "fs.fs"
 local File = require "file.File"
 
-Packages {
-  "File Opened For Write"
-}
+local package = Package "File Opened For Write"
 
 Case("mycase") {
   case = function()
-    loadPackage("File Opened For Write")
+    package:load()
     local fileName = fs.getTempDirectory() .. "\\testfile"
     local f = File.create(fileName, CREATE_ALWAYS, GENERIC_WRITE)
     f:close()
-    unloadPackage("File Opened For Write")
+    package:unload()
+
     local events = fetchEvents("File Opened For Write")
     assert(#events ~= 0)
   end

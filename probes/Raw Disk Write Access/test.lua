@@ -2,13 +2,11 @@ setfenv(1, require "sysapi-ns")
 local bor = bit.bor
 local File = require "file.File"
 
-Packages {
-  "Raw Disk Write Access"
-}
+local package = Package "Raw Disk Write Access"
 
 Case("mycase") {
   case = function()
-    loadPackage("Raw Disk Write Access")
+    package:load()
 
     local f =
       File.create(
@@ -19,7 +17,7 @@ Case("mycase") {
       bor(FILE_SHARE_READ, FILE_SHARE_WRITE)
     )
 
-    unloadPackage("Raw Disk Write Access")
+    package:unload()
 
     if f then
       local events = fetchEvents("Raw Disk Write Access")
