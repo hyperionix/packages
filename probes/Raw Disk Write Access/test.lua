@@ -3,12 +3,12 @@ local bor = bit.bor
 local File = require "file.File"
 
 Packages {
-  "Raw Disk Opened For Write"
+  "Raw Disk Write Access"
 }
 
 Case("mycase") {
   case = function()
-    loadPackage("Raw Disk Opened For Write")
+    loadPackage("Raw Disk Write Access")
 
     local f =
       File.create(
@@ -19,10 +19,10 @@ Case("mycase") {
       bor(FILE_SHARE_READ, FILE_SHARE_WRITE)
     )
 
-    unloadPackage("Raw Disk Opened For Write")
+    unloadPackage("Raw Disk Write Access")
 
     if f then
-      local events = fetchEvents("Raw Disk Opened For Write")
+      local events = fetchEvents("Raw Disk Write Access")
       assert(#events ~= 0)
     end
   end

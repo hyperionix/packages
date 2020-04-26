@@ -18,7 +18,7 @@ end
 
 ---@param context ExitExecutionContext
 local function onExit(context)
-  if context.retval == 0 then
+  if context.retval == STATUS_SUCCESS then
     Event(
       "File Opened For Write",
       {

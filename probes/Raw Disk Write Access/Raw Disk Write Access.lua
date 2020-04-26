@@ -1,7 +1,9 @@
 setfenv(1, require "sysapi-ns")
-local _ = hp.underscore
 local ProcessEntity = hp.ProcessEntity
+local EventChannel = hp.EventChannel
 local band = bit.band
+local string = string
+local pairs = pairs
 
 local DISK_NAME_PATTERNS = {
   "\\??\\PhysicalDrive%d",
@@ -11,21 +13,20 @@ local DISK_NAME_PATTERNS = {
 }
 
 local function IsDiskDevice(name)
-  return _.detect(
-    DISK_NAME_PATTERNS,
-    function(pattern)
-      return name:find(pattern)
+  for _, pattern in pairs(DISK_NAME_PATTERNS) do
+    if name:find(pattern) then
+      return true
     end
-  )
+  end
 end
 
 local function IsWriteAccess(access)
   return band(access, FILE_WRITE_DATA) ~= 0 or band(access, FILE_APPEND_DATA) ~= 0 or band(access, GENERIC_WRITE) ~= 0
 end
 
-local function onEntry(context)
-  local access = context.p.DesiredAccess
-  if IsWriteAccess(access) then
+---@param context EntryExecutionContext
+local onEntry = function(context)
+  if IsWriteAccess(context.p.DesiredAccess) then
     targetName = string.fromUS(context.p.ObjectAttributes.ObjectName)
     if IsDiskDevice(targetName) then
       return true
@@ -33,24 +34,21 @@ local function onEntry(context)
   end
 end
 
-local function onExit(context)
-  if context.r.eax ~= 0 then
-    return
-  end
-
-  return {
-    events = {
-      Event {
-        name = "Raw Disk Opened For Write",
+---@param context ExitExecutionContext
+local onExit = function(context)
+  if context.retval == STATUS_SUCCESS then
+    Event(
+      "Raw Disk Access",
+      {
         targetName = targetName,
         process = ProcessEntity.fromCurrent()
-      }:saveTo("splunk", "file")
-    }
-  }
+      }
+    ):send(EventChannel.file, EventChannel.splunk)
+  end
 end
 
 Probe {
-  name = "Raw Disk Opened For Write",
+  name = "Raw Disk Access",
   hooks = {
     {
       name = "NtCreateFile",
