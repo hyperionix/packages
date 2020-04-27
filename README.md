@@ -1,7 +1,15 @@
+# Hyperionix packages
+The repository contains packages for Hyperionix (http://hyperionix.com/) - a platform for development and deployment of modular OS monitoring and behavior modification packages. 
+
+Developer documentation can be found [here](https://docs.hyperionix.com/)
+
 ## Hook package
 ![](https://raw.githubusercontent.com/hyperionix/resources/master/images/hook.gif)
 
-## Packages List
+## Probe package
+![](https://raw.githubusercontent.com/hyperionix/resources/master/images/probe.gif)
+
+## Repository packages list
 | Package | HMC Ready | Test |
 |---------|:---------:|:----:|
 | Hooks|
