@@ -1,4 +1,5 @@
 setfenv(1, require "sysapi-ns")
+local File = require "file.File"
 local ProcessEntity = hp.ProcessEntity
 local FileEntity = hp.FileEntity
 local EventChannel = hp.EventChannel
@@ -22,7 +23,12 @@ local function onExit(context)
     Event(
       "File Opened For Write",
       {
-        file = FileEntity.fromPath(string.fromUS(context.p.ObjectAttributes.ObjectName)),
+        file = FileEntity.fromTable(
+          {
+            fullPath = string.fromUS(context.p.ObjectAttributes.ObjectName),
+            handle = context.p.FileHandle[0]
+          }
+        ),
         process = ProcessEntity.fromCurrent()
       }
     ):send(EventChannel.file, EventChannel.splunk)
