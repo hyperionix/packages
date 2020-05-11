@@ -1,7 +1,7 @@
 setfenv(1, require "sysapi-ns")
+local ioctl = require "ioctl.ioctl"
 local ProcessEntity = hp.ProcessEntity
 local EventChannel = hp.EventChannel
-local ioctl = require"ioctl.ioctl"
 
 ---@param context EntryExecutionContext
 local NtDeviceIoControlFile_onEntry = function(context)
@@ -12,7 +12,7 @@ local NtDeviceIoControlFile_onExit = function(context)
   if context.retval == STATUS_SUCCESS then
     local code = toaddress(context.p.IoControlCode)
     Event(
-      "IOCTL Sended",
+      "IOCTL Sent",
       {
         method = ioctl.getMethod(code),
         deviceType = ioctl.getDeviceType(code),
