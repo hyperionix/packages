@@ -1,0 +1,10 @@
+[
+  {
+    "name" : "ntdll",
+    "types": [
+      {
+        "name": "_PEB"
+      }
+    ]
+  }
+]

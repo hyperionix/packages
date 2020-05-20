@@ -1,0 +1,30 @@
+{
+  "name": "LdrpLoadDll",
+  "ver": "0.1",
+  "type": "hook",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "windows": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "description": {
+    "summary": "ntdll!LdrpLoadDll hook",
+    "details": "Package for patching ntdll!LdrpLoadDll function",
+    "license": "MIT"
+  },
+  "src": [
+    "LdrpLoadDll.lua"
+  ],
+  "symbols": "LdrpLoadDll.sym"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Symbols Test",
+  "ver": "0.1",
+  "type": "probe",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "nt": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "dependencies": {
+    "LdrpLoadDll": ">= 0.1"
+  },
+  "src": [
+    "Symbols Test.lua"
+  ],
+  "symbols": "Symbols Test.sym"
+}

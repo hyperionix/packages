@@ -1,0 +1,8 @@
+[
+  {
+    "name" : "ntdll",
+    "globals" : [
+      "LdrpLoadDll"
+    ]
+  }
+]
