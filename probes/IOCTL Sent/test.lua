@@ -18,7 +18,7 @@ Case("mycase") {
       local code = CTL_CODE(FILE_DEVICE_BEEP, 0, METHOD_BUFFERED, FILE_ANY_ACCESS)
       local params = ffi.new("BEEP_SET_PARAMETERS")
       params.Frequency = 100
-      params.Duration = 1000
+      params.Duration = 1
       if f:ioctl(code, params) ~= 0 then
         local events = fetchEvents("IOCTL Sent")
         assert(#events ~= 0)
