@@ -13,26 +13,26 @@ Developer documentation can be found [here](https://docs.hyperionix.com/)
 | Package | HMC Ready | Test |
 |---------|:---------:|:----:|
 | Hooks|
-| NtAllocateVirtualMemory|Yes|No|
-| NtCreateFile|Yes|No|
-| NtCreateThread|Yes|No|
-| NtCreateThreadEx|Yes|No|
-| NtCreateUserProcess|Yes|No|
-| NtOpenFile|Yes|No|
-| NtQueryInformationProcess|No|No|
-| NtReadFile|Yes|No|
-| NtSetInformationFile|Yes|No|
-| NtWriteFile|Yes|No|
-| NtWriteVirtualMemory|Yes|No|
-| RtlInitUnicodeString|Yes|No|
+| NtAllocateVirtualMemory|✔|❌|
+| NtCreateFile|✔|❌|
+| NtCreateThread|✔|❌|
+| NtCreateThreadEx|✔|❌|
+| NtCreateUserProcess|✔|❌|
+| NtOpenFile|✔|❌|
+| NtQueryInformationProcess|❌|❌|
+| NtReadFile|✔|❌|
+| NtSetInformationFile|✔|❌|
+| NtWriteFile|✔|❌|
+| NtWriteVirtualMemory|✔|❌|
+| RtlInitUnicodeString|✔|❌|
 | Probes|
-| File Opened For Write|Yes|Yes|
-| Interprocess Memory Allocation|Yes|Yes|
-| Interprocess Memory Write|Yes|Yes|
-| Interprocess Thread Creation|Yes|Yes|
-| Process Created|Yes|Yes|
-| Raw Disk Opened For Write|Yes|Yes|
-| Raw Disk Write Access|Yes|Yes|
+| File Opened For Write|✔|✔|
+| Interprocess Memory Allocation|✔|✔|
+| Interprocess Memory Write|✔|✔|
+| Interprocess Thread Creation|✔|✔|
+| Process Created|✔|✔|
+| Raw Disk Opened For Write|✔|✔|
+| Raw Disk Write Access|✔|✔|
 | Scheduled Probes|
-| Services List|Yes|Yes|
+| Services List|✔|✔|
 
