@@ -29,16 +29,18 @@ local onEntry = function(context)
   if IsWriteAccess(context.p.DesiredAccess) then
     targetName = string.fromUS(context.p.ObjectAttributes.ObjectName)
     if IsDiskDevice(targetName) then
-      return true
+      return
     end
   end
+
+  context:skipExitHook()
 end
 
 ---@param context ExitExecutionContext
 local onExit = function(context)
   if context.retval == STATUS_SUCCESS then
     Event(
-      "Raw Disk Access",
+      "Raw Disk Write Access",
       {
         targetName = targetName,
         process = ProcessEntity.fromCurrent()
@@ -48,7 +50,7 @@ local onExit = function(context)
 end
 
 Probe {
-  name = "Raw Disk Access",
+  name = "Raw Disk Write Access",
   hooks = {
     {
       name = "NtCreateFile",
