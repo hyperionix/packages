@@ -12,7 +12,7 @@ Case("mycase") {
     f:close()
     package:unload()
 
-    local events = fetchEvents("File Opened For Write")
+    local events = fetchEvents("File Created For Write")
     assert(#events ~= 0)
   end
 }
