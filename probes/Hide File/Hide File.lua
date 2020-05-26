@@ -3,43 +3,6 @@ local File = require "file.File"
 local FilePath = require "file.Path"
 local string = string
 
-hp.cdef [[
-  typedef struct _FILE_BOTH_DIR_INFORMATION {
-    ULONG         NextEntryOffset;
-    ULONG         FileIndex;
-    LARGE_INTEGER CreationTime;
-    LARGE_INTEGER LastAccessTime;
-    LARGE_INTEGER LastWriteTime;
-    LARGE_INTEGER ChangeTime;
-    LARGE_INTEGER EndOfFile;
-    LARGE_INTEGER AllocationSize;
-    ULONG         FileAttributes;
-    ULONG         FileNameLength;
-    ULONG         EaSize;
-    BYTE          ShortNameLength;
-    WCHAR         ShortName[12];
-    WCHAR         FileName[1];
-  } FILE_BOTH_DIR_INFORMATION, *PFILE_BOTH_DIR_INFORMATION;
-
-  typedef struct _FILE_ID_BOTH_DIR_INFO {
-    ULONG         NextEntryOffset;
-    ULONG         FileIndex;
-    LARGE_INTEGER CreationTime;
-    LARGE_INTEGER LastAccessTime;
-    LARGE_INTEGER LastWriteTime;
-    LARGE_INTEGER ChangeTime;
-    LARGE_INTEGER EndOfFile;
-    LARGE_INTEGER AllocationSize;
-    ULONG         FileAttributes;
-    ULONG         FileNameLength;
-    ULONG         EaSize;
-    BYTE          ShortNameLength;
-    WCHAR         ShortName[12];
-    LARGE_INTEGER FileId;
-    WCHAR         FileName[1];
-  } FILE_ID_BOTH_DIR_INFO, *PFILE_ID_BOTH_DIR_INFO;
-]]
-
 local HIDDEN_FILE = "C:\\Windows\\notepad.exe"
 
 local hiddenFullPath = FilePath.fromString(HIDDEN_FILE:lower())

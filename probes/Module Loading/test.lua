@@ -2,16 +2,6 @@ setfenv(1, require "sysapi-ns")
 
 local package = Package "Module Loading"
 
-hp.cdef [[
-  HMODULE LoadLibraryA(
-    LPCSTR lpLibFileName
-  );
-
-  BOOL FreeLibrary(
-    HMODULE hLibModule
-  );
-]]
-
 Case("mycase") {
   case = function()
     package:load()

@@ -4,13 +4,6 @@ local File = require "file.File"
 
 local package = Package "File Moved"
 
-hp.cdef [[
-  BOOL MoveFileA(
-    LPCSTR lpExistingFileName,
-    LPCSTR lpNewFileName
-  );
-]]
-
 Case("mycase") {
   case = function()
     local tempDir = fs.getTempDirectory()

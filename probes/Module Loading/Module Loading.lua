@@ -2,14 +2,6 @@ setfenv(1, require "sysapi-ns")
 local EventChannel = hp.EventChannel
 local ProcessEntity = hp.ProcessEntity
 
-hp.cdef [[
-  DWORD GetModuleFileNameA(
-    HMODULE hModule,
-    LPSTR   lpFilename,
-    DWORD   nSize
-  );
-]]
-
 local function getModuleFullPath(hmod)
   local size = 512
 
