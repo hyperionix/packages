@@ -1,0 +1,20 @@
+{
+  "name" : "Module Loading",
+  "ver" : "0.1",
+  "type" : "probe",
+  "environment" : {
+    "os" : ["windows"],
+    "os_ver" : {
+      "nt" : [">= 9600"]
+    },
+    "engine" : ["sensor"],
+    "agent_ver" : [">= 0.4.0"]
+  },
+  "dependencies" : {
+    "LdrLoadDll" : ">= 0.1",
+    "LdrUnloadDll" : ">= 0.1"
+  },
+  "src" : [
+    "Module Loading.lua"
+  ]
+}

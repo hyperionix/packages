@@ -1,0 +1,27 @@
+{
+  "name": "File Closed",
+  "ver": "0.1",
+  "type": "probe",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "nt": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "dependencies": {
+    "NtClose": ">= 0.1"
+  },
+  "src": [
+    "File Closed.lua"
+  ]
+}

@@ -7,10 +7,8 @@ local string = string
 
 ScheduledProbe {
   name = "Services List",
-  interval = 1 * 60 * 1000, -- ms
+  intervalMS = 1 * 60 * 1000,
   callback = function()
-    print()
-
     local mgr = ServiceManager.open(bor(SC_MANAGER_CONNECT, SC_MANAGER_ENUMERATE_SERVICE))
     if mgr then
       local services = {}
