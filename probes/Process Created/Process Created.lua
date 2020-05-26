@@ -9,13 +9,15 @@ end
 ---@param context ExitExecutionContext
 local NtCreateUserProcess_onExit = function(context)
   if context.retval == STATUS_SUCCESS then
+    local processEntity = ProcessEntity.fromHandle(context.p.ProcessHandle[0])
+    processEntity.backingFile:calcHashes({"md5"})
     Event(
       "Process Created",
       {
-        newProcess = ProcessEntity.fromHandle(context.p.ProcessHandle[0]),
+        newProcess = processEntity,
         parentProcess = ProcessEntity.fromCurrent()
       }
-    ):send(EventChannel.file, EventChannel.splunk)
+    )
   end
 end
 

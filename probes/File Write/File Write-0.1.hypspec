@@ -1,5 +1,5 @@
 {
-  "name": "File Moved",
+  "name": "File Write",
   "ver": "0.1",
   "type": "probe",
   "environment": {
@@ -19,9 +19,9 @@
     ]
   },
   "dependencies": {
-    "NtSetInformationFile": ">= 0.1"
+    "NtWriteFile": ">= 0.1"
   },
   "src": [
-    "File Moved.lua"
+    "File Write.lua"
   ]
 }

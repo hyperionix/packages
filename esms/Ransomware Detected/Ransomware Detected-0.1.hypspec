@@ -1,7 +1,7 @@
 {
-  "name": "File Moved",
+  "name": "Ransomware Detected",
   "ver": "0.1",
-  "type": "probe",
+  "type": "esm",
   "environment": {
     "os": [
       "windows"
@@ -12,16 +12,17 @@
       ]
     },
     "engine": [
-      "sensor"
+      "service"
     ],
     "agent_ver": [
       ">= 0.4.0"
     ]
   },
   "dependencies": {
-    "NtSetInformationFile": ">= 0.1"
+    "Suspicious Process Created 1": ">= 0.1",
+    "Export Crypto Key": ">= 0.1"
   },
   "src": [
-    "File Moved.lua"
+    "Ransomware Detected.lua"
   ]
 }

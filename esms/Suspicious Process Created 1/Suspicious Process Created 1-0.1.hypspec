@@ -1,7 +1,7 @@
 {
-  "name": "File Moved",
+  "name": "Suspicious Process Created 1",
   "ver": "0.1",
-  "type": "probe",
+  "type": "esm",
   "environment": {
     "os": [
       "windows"
@@ -12,16 +12,18 @@
       ]
     },
     "engine": [
-      "sensor"
+      "service"
     ],
     "agent_ver": [
       ">= 0.4.0"
     ]
   },
   "dependencies": {
-    "NtSetInformationFile": ">= 0.1"
+    "File Created By Browser": ">= 0.1",
+    "File Moved": ">= 0.1",
+    "Process Created": ">= 0.1"
   },
   "src": [
-    "File Moved.lua"
+    "Suspicious Process Created 1.lua"
   ]
 }

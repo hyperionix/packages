@@ -2,6 +2,7 @@ setfenv(1, require "sysapi-ns")
 local File = require "file.File"
 local EventChannel = hp.EventChannel
 local ProcessEntity = hp.ProcessEntity
+local FileEntity = hp.FileEntity
 
 ---@param context EntryExecutionContext
 local function onEntry(context)
@@ -9,8 +10,7 @@ local function onEntry(context)
     context.p.FileInformationClass == ffi.C.FileRenameInformation or
       context.p.FileInformationClass == ffi.C.FileRenameInformationEx
    then
-    local f = File.fromHandle(context.p.FileHandle)
-    fullPathBefore = f.fullPath
+    srcFileEntity = FileEntity.fromHandle(context.p.FileHandle)
   else
     -- skip unwanted operations
     context:skipExitHook()
@@ -21,15 +21,16 @@ end
 local function onExit(context)
   if context.retval == STATUS_SUCCESS then
     local f = File.fromHandle(context.p.FileHandle)
-
-    Event(
-      f:isDirectory() and "Entire Directory Moved" or "File Moved",
-      {
-        before = fullPathBefore,
-        after = f.fullPath,
-        process = ProcessEntity.fromCurrent()
-      }
-    ):send(EventChannel.file, EventChannel.splunk)
+    if not f:isDirectory() then
+      Event(
+        "File Moved",
+        {
+          srcFile = srcFileEntity,
+          dstFile = FileEntity.fromSysapiFile(f):calcHashes({"md5"}),
+          process = ProcessEntity.fromCurrent()
+        }
+      )
+    end
   end
 end
 

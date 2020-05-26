@@ -1,13 +1,13 @@
 {
-  "name": "File Moved",
+  "name": "NtClose",
   "ver": "0.1",
-  "type": "probe",
+  "type": "hook",
   "environment": {
     "os": [
       "windows"
     ],
     "os_ver": {
-      "nt": [
+      "windows": [
         ">= 9600"
       ]
     },
@@ -18,10 +18,12 @@
       ">= 0.4.0"
     ]
   },
-  "dependencies": {
-    "NtSetInformationFile": ">= 0.1"
+  "description": {
+    "summary": "ntdll!NtClose hook",
+    "details": "Package for patching ntdll!NtClose function",
+    "license": "MIT"
   },
   "src": [
-    "File Moved.lua"
+    "NtClose.lua"
   ]
 }

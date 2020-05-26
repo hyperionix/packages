@@ -1,5 +1,5 @@
 {
-  "name": "File Moved",
+  "name": "File Modified By Gancrab",
   "ver": "0.1",
   "type": "probe",
   "environment": {
@@ -19,9 +19,12 @@
     ]
   },
   "dependencies": {
-    "NtSetInformationFile": ">= 0.1"
+    "NtCreateFile": ">= 0.1",
+    "NtOpenFile": ">= 0.1",
+    "NtWriteFile": ">= 0.1",
+    "NtClose": ">= 0.1"
   },
   "src": [
-    "File Moved.lua"
+    "File Modified By Gancrab.lua"
   ]
 }
