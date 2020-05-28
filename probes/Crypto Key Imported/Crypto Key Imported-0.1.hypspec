@@ -1,5 +1,5 @@
 {
-  "name": "Export Crypto Key",
+  "name": "Crypto Key Imported",
   "ver": "0.1",
   "type": "probe",
   "environment": {
@@ -19,9 +19,9 @@
     ]
   },
   "dependencies": {
-    "CryptExportKey": ">= 0.1"
+    "CryptImportKey": ">= 0.1"
   },
   "src": [
-    "Export Crypto Key.lua"
+    "Crypto Key Imported.lua"
   ]
 }

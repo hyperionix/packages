@@ -1,8 +1,6 @@
 setfenv(1, require "sysapi-ns")
-local stringify = require "utils.stringify"
 local ProcessEntity = hp.ProcessEntity
-local EventChannel = hp.EventChannel
-local base64 = hp.base64
+local CryptoKeyEntity = hp.CryptoKeyEntity
 
 ---@param context EntryExecutionContext
 local CryptExportKey_onEntry = function(context)
@@ -15,18 +13,17 @@ end
 local CryptExportKey_onExit = function(context)
   if context.retval ~= 0 then
     Event(
-      "Export Crypto Key",
+      "Crypto Key Exported",
       {
         process = ProcessEntity.fromCurrent(),
-        key = base64.enc(ffi.string(context.p.pbData, tonumber(context.p.pdwDataLen[0]))),
-        type = stringify.value(tonumber(context.p.dwBlobType), "KEYBLOB_TYPE")
+        key = CryptoKeyEntity.fromHandle(context.p.hKey, CRYPT_EXPORTABLE)
       }
     )
   end
 end
 
 Probe {
-  name = "Export Crypto Key",
+  name = "Crypto Key Exported",
   hooks = {
     {
       name = "CryptExportKey",
