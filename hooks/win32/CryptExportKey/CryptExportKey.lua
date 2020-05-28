@@ -1,7 +1,3 @@
-hp.cdef [[
-  typedef void* HCRYPTKEY;
-]]
-
 Hook {
   name = "CryptExportKey",
   target = "cryptsp!CryptExportKey",
