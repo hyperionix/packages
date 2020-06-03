@@ -14,7 +14,7 @@ Esm {
       name = "Suspicious Process Created 1"
     },
     {
-      name = "Export Crypto Key"
+      name = "Crypto Key Exported"
     }
   },
   states = {

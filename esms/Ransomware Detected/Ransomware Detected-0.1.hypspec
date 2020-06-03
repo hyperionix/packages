@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "Suspicious Process Created 1": ">= 0.1",
-    "Export Crypto Key": ">= 0.1"
+    "Crypto Key Exported": ">= 0.1"
   },
   "src": [
     "Ransomware Detected.lua"
