@@ -11,5 +11,9 @@ Hook {
     )
   ]],
   onEntry = function(context)
+    Event("MyEvent")
+  end,
+  onExit = function(context)
+    Event("MyEvent")
   end
 }
