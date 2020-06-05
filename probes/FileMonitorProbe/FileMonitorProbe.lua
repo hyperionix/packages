@@ -11,7 +11,7 @@ local CurrentProcessEntity = hp.CurrentProcessEntity
 local LOG_LEVEL = 1
 local CONSOLE_LOG = hp.Logger:new(LOG_LEVEL, hp.Logger.sink.console)
 local DBG_LOG = hp.Logger:new(LOG_LEVEL, hp.Logger.sink.debug)
-local LOG = CONSOLE_LOG
+local LOG = DBG_LOG
 
 local AllFilesCache = EntityCache.new("AllFilesCache", 64)
 local FileSizeCache = EntityCache.new("FileSizeCache", 64)
@@ -220,18 +220,22 @@ local NtClose_onEntry = function(context)
       local cacheKey = ffi.cast("void*", file.size)
       local sizeData = FileSizeCache:lookup(cacheKey)
       if not sizeData then
-        FileSizeCache:store({name = flowData.name, devChars = flowData.devChars}, cacheKey)
+        -- Create file entity for closed file here
+        local fileEntity = FileEntity.fromSysapiFile(file)
+        FileSizeCache:store({name = flowData.name, devChars = flowData.devChars, fileEntity = fileEntity}, cacheKey)
       else
-        local srcFilePath, dstFilePath, srcFile, dstFile, dstDevChars
+        local srcFilePath, dstFilePath, srcFile, dstFile, dstDevChars, dstFileEntity, srcFileEntity
         if flowData.read then
           -- The last closed file is a source file
           srcFilePath = file.fullPath
-          dstFilePath = sizeData.name
           srcFile = file
+          dstFilePath = sizeData.name
+          dstFileEntity = sizeData.fileEntity
           dstDevChars = sizeData.devChars
         else
           -- The last closed file is a destination file
           srcFilePath = sizeData.name
+          srcFileEntity = sizeData.fileEntity
           dstFilePath = file.fullPath
           dstFile = file
           dstDevChars = flowData.devChars
@@ -239,15 +243,13 @@ local NtClose_onEntry = function(context)
 
         if srcFilePath and dstFilePath and srcFilePath ~= dstFilePath then
           -- small optimization to prevent creation both entites from paths which is slower than from sysapi File object
-          local srcFileEntity, dstFileEntity
           if srcFile then
-            dstFile = File.fromFullPath(dstFilePath)
+            -- typical case for file copy
+            -- in this case we already have dstFileEntity created on close of the file
             srcFileEntity = FileEntity.fromSysapiFile(srcFile)
-            dstFileEntity = FileEntity.fromSysapiFile(dstFile)
           else
+            -- in this case we have srcFileEntity
             assert(dstFile)
-            srcFile = File.fromFullPath(srcFilePath)
-            srcFileEntity = FileEntity.fromSysapiFile(srcFile)
             dstFileEntity = FileEntity.fromSysapiFile(dstFile)
           end
 
