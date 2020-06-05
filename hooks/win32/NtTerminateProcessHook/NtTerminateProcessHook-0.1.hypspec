@@ -1,0 +1,29 @@
+{
+  "name": "NtTerminateProcessHook",
+  "ver": "0.1",
+  "type": "hook",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "windows": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "description": {
+    "summary": "ntdll!NtTerminateProcess hook",
+    "details": "Package for patching ntdll!NtTerminateProcess function",
+    "license": "MIT"
+  },
+  "src": [
+    "NtTerminateProcessHook.lua"
+  ]
+}

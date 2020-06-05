@@ -1,0 +1,32 @@
+{
+  "name": "RegistryMonitorProbe",
+  "ver": "0.1",
+  "type": "probe",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "nt": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "dependencies": {
+    "NtCreateKeyHook": ">= 0.1",
+    "NtOpenKeyHook": ">= 0.1",
+    "NtOpenKeyExHook": ">= 0.1",
+    "NtSetValueKeyHook": ">= 0.1",
+    "NtDeleteKeyHook": ">= 0.1",
+    "NtDeleteValueKeyHook": ">= 0.1"
+  },
+  "src": [
+    "RegistryMonitorProbe.lua"
+  ]
+}

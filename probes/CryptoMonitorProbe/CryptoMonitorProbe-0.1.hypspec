@@ -1,0 +1,29 @@
+{
+  "name": "CryptoMonitorProbe",
+  "ver": "0.1",
+  "type": "probe",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "nt": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "dependencies": {
+    "CryptExportKeyHook": ">= 0.1",
+    "CryptImportKeyHook": ">= 0.1",
+    "CryptGenKeyHook": ">= 0.1"
+  },
+  "src": [
+    "CryptoMonitorProbe.lua"
+  ]
+}

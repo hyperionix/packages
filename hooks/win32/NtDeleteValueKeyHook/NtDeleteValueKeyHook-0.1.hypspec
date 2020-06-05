@@ -1,0 +1,29 @@
+{
+  "name": "NtDeleteValueKeyHook",
+  "ver": "0.1",
+  "type": "hook",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "windows": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "description": {
+    "summary": "ntdll!NtDeleteValueKey hook",
+    "details": "Package for patching ntdll!NtDeleteValueKey function",
+    "license": "MIT"
+  },
+  "src": [
+    "NtDeleteValueKeyHook.lua"
+  ]
+}

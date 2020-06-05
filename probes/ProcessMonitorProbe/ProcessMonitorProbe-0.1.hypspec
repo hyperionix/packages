@@ -1,0 +1,34 @@
+{
+  "name": "ProcessMonitorProbe",
+  "ver": "0.1",
+  "type": "probe",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "nt": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "dependencies": {
+    "NtCreateUserProcess": ">= 0.1",
+    "NtTerminateProcessHook": ">= 0.1",
+    "NtOpenProcessHook": ">= 0.1",
+    "NtSetInformationProcessHook": ">= 0.1",
+    "NtSuspendProcessHook": ">= 0.1",
+    "NtDebugActiveProcessHook": ">= 0.1",
+    "NtAllocateVirtualMemory": ">= 0.1",
+    "NtProtectVirtualMemoryHook": ">= 0.1"
+  },
+  "src": [
+    "ProcessMonitorProbe.lua"
+  ]
+}

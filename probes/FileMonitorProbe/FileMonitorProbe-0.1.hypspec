@@ -1,0 +1,32 @@
+{
+  "name": "FileMonitorProbe",
+  "ver": "0.1",
+  "type": "probe",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "nt": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "dependencies": {
+    "NtCreateFile": ">= 0.1",
+    "NtOpenFile": ">= 0.1",
+    "NtWriteFile": ">= 0.1",
+    "NtReadFile": ">= 0.1",
+    "NtSetInformationFile": ">= 0.1",
+    "NtClose": ">= 0.1"
+  },
+  "src": [
+    "FileMonitorProbe.lua"
+  ]
+}
