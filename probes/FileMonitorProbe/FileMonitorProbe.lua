@@ -1,12 +1,10 @@
 setfenv(1, require "sysapi-ns")
 local File = require "file.File"
-local FilePath = require "file.Path"
 local time = require "time.time"
 local EntityCache = hp.EntityCache
 local FileEntity = hp.FileEntity
 local EventChannel = hp.EventChannel
 local band = bit.band
-local string = string
 
 local CurrentProcessEntity = hp.CurrentProcessEntity
 
@@ -31,8 +29,9 @@ local NtCreateFile_NtOpenFile_onExit = function(context)
       if context.hook == "NtCreateFile" then
         local info = context.p.IoStatusBlock.Information
         if info == FILE_CREATED or info == FILE_OVERWRITTEN then
-          local filePath = FilePath.fromString(file.fullPath)
-          if string.find(filePath.basename .. filePath.ext, ":") then
+          -- detecting ADS by ":" (ignoring ":" after drive letter)
+          local pos = file.fullPath:find(":", 4)
+          if pos then
             Event(
               "ADSCreateEvent",
               {
@@ -40,6 +39,17 @@ local NtCreateFile_NtOpenFile_onExit = function(context)
                 file = FileEntity.fromSysapiFile(file)
               }
             ):send(EventChannel.splunk)
+
+            local adsName = file.fullPath:sub(pos + 1)
+            if adsName == "Zone.Identifier" then
+              Event(
+                "FileDownloadEvent",
+                {
+                  actorProcess = CurrentProcessEntity,
+                  file = FileEntity.fromFullPath(file.fullPath:sub(1, pos - 1))
+                }
+              ):send(EventChannel.splunk)
+            end
           end
         end
       end

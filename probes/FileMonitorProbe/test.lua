@@ -21,6 +21,9 @@ Case("FileMonitorProbe") {
     f = File.create(fileName1 .. ":stream1", CREATE_ALWAYS)
     f:close()
 
+    f = File.create(fileName1 .. ":Zone.Identifier", CREATE_ALWAYS)
+    f:close()
+
     ffi.C.CopyFileA(fileName1, fileName2, false)
     ffi.C.MoveFileA(fileName1, fileName3)
     File.delete(fileName2)
