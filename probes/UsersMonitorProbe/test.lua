@@ -5,7 +5,7 @@ local package = Package "UsersMonitorProbe"
 
 ffi.load("samcli")
 
-Case("UsersMonitorProbe") {
+Case("DISABLED_UsersMonitorProbe") {
   case = function()
     package:load()
 

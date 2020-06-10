@@ -24,7 +24,8 @@
     "NtOpenKeyExHook": ">= 0.1",
     "NtSetValueKeyHook": ">= 0.1",
     "NtDeleteKeyHook": ">= 0.1",
-    "NtDeleteValueKeyHook": ">= 0.1"
+    "NtDeleteValueKeyHook": ">= 0.1",
+    "NtCloseHook": ">= 0.1"
   },
   "src": [
     "RegistryMonitorProbe.lua"

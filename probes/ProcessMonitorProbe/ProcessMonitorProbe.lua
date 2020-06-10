@@ -25,13 +25,12 @@ end
 ---@param context ExitExecutionContext
 local NtCreateUserProcess_onExit = function(context)
   if NT_SUCCESS(context.retval) then
-    local processEntity = ProcessEntity.fromHandle(context.p.ProcessHandle[0])
-    processEntity.backingFile:calcHashes({"md5"})
+    local processEntity = ProcessEntity.fromHandle(context.p.ProcessHandle[0]):build()
     Event(
       "ProcessCreateEvent",
       {
         process = processEntity,
-        parentProcess = CurrentProcessEntity
+        actorProcess = CurrentProcessEntity
       }
     ):send(EventChannel.splunk)
   end
@@ -61,7 +60,7 @@ local NtOpenProcess_onExit = function(context)
       "ProcessAccessEvent",
       {
         actorProcess = CurrentProcessEntity,
-        process = ProcessEntity.fromPid(toaddress(context.p.ClientId.UniqueProcess)),
+        process = ProcessEntity.fromPid(toaddress(context.p.ClientId.UniqueProcess)):build(),
         access = stringify.mask(context.p.DesiredAccess, PROCESS_ACCESS_STR)
       }
     ):send(EventChannel.splunk)
@@ -88,7 +87,7 @@ local NtSetInformationProcess_onExit = function(context)
       "ProcessModificationEvent",
       {
         actorProcess = CurrentProcessEntity,
-        process = ProcessEntity.fromHandle(context.p.ProcessHandle),
+        process = ProcessEntity.fromHandle(context.p.ProcessHandle):build(),
         infoType = tonumber(context.p.ProcessInformationClass)
       }
     ):send(EventChannel.splunk)
@@ -106,7 +105,7 @@ local NtSuspendProcess_onExit = function(context)
       "ProcessSuspendEvent",
       {
         actorProcess = CurrentProcessEntity,
-        process = ProcessEntity.fromHandle(context.p.ProcessHandle)
+        process = ProcessEntity.fromHandle(context.p.ProcessHandle):build()
       }
     ):send(EventChannel.splunk)
   end
@@ -123,7 +122,7 @@ local NtDebugActiveProcess_onExit = function(context)
       "ProcessDebugEvent",
       {
         actorProcess = CurrentProcessEntity,
-        process = ProcessEntity.fromHandle(context.p.ProcessHandle)
+        process = ProcessEntity.fromHandle(context.p.ProcessHandle):build()
       }
     ):send(EventChannel.splunk)
   end
@@ -150,7 +149,7 @@ local NtAllocateVirtualMemory_onExit = function(context)
         size = tonumber(context.p.RegionSize[0]),
         protect = tonumber(context.p.Protect),
         actorProcess = CurrentProcessEntity,
-        process = ProcessEntity.fromHandle(context.p.ProcessHandle)
+        process = ProcessEntity.fromHandle(context.p.ProcessHandle):build()
       }
     ):send(EventChannel.splunk)
   end
@@ -160,7 +159,7 @@ Probe {
   name = "ProcessMonitorProbe",
   hooks = {
     {
-      name = "NtCreateUserProcess",
+      name = "NtCreateUserProcessHook",
       onEntry = NtCreateUserProcess_onEntry,
       onExit = NtCreateUserProcess_onExit
     },
@@ -185,7 +184,7 @@ Probe {
       onExit = NtDebugActiveProcess_onExit
     },
     {
-      name = "NtAllocateVirtualMemory",
+      name = "NtAllocateVirtualMemoryHook",
       onEntry = NtAllocateVirtualMemory_onEntry,
       onExit = NtAllocateVirtualMemory_onExit
     }

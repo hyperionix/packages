@@ -4,12 +4,11 @@ local Handle = require "handle.Handle"
 
 local band = bit.band
 local string = string
-local EntityCache = hp.EntityCache
-local ProcessEntity = hp.ProcessEntity
+local SharedTable = hp.SharedTable
 local EventChannel = hp.EventChannel
 local CurrentProcessEntity = hp.CurrentProcessEntity
 
-local RegistryCache = EntityCache.new("RegistryCache", 64)
+local RegistryCache = SharedTable.new("RegistryCache", "number", 64)
 local WriteAccessMask = bit.bor(MAXIMUM_ALLOWED, KEY_SET_VALUE, DELETE)
 
 local function getNameFromObjAttr(objAttr)
@@ -50,13 +49,13 @@ local NtCreateKey_NtOpenKey_onExit = function(context)
       name = getNameFromObjAttr(context.p.ObjectAttributes)
     }
 
-    RegistryCache:store(flowData, context.p.KeyHandle[0])
+    RegistryCache:add(context.p.KeyHandle[0], flowData)
   end
 end
 
 ---@param context EntryExecutionContext
 local NtSetValueKey_onEntry = function(context)
-  local flowData = RegistryCache:lookup(context.p.KeyHandle)
+  local flowData = RegistryCache:get(context.p.KeyHandle)
   if not flowData then
     context:skipExitHook()
   end
@@ -65,7 +64,7 @@ end
 ---@param context ExitExecutionContext
 local NtSetValueKey_onExit = function(context)
   if NT_SUCCESS(context.retval) then
-    local flowData = RegistryCache:lookup(context.p.KeyHandle)
+    local flowData = RegistryCache:get(context.p.KeyHandle)
     if flowData then
       Event(
         "RegistryModificationEvent",
@@ -83,7 +82,7 @@ end
 
 ---@param context EntryExecutionContext
 local NtDeleteKey_NtDeleteValueKey_onEntry = function(context)
-  local flowData = RegistryCache:lookup(context.p.KeyHandle)
+  local flowData = RegistryCache:get(context.p.KeyHandle)
   if not flowData then
     context:skipExitHook()
   end
@@ -92,7 +91,7 @@ end
 ---@param context ExitExecutionContext
 local NtDeleteKey_NtDeleteValueKey_onExit = function(context)
   if NT_SUCCESS(context.retval) then
-    local flowData = RegistryCache:lookup(context.p.KeyHandle)
+    local flowData = RegistryCache:get(context.p.KeyHandle)
     if flowData then
       local eventName
       local value
@@ -154,7 +153,7 @@ Probe {
       onExit = NtDeleteKey_NtDeleteValueKey_onExit
     },
     {
-      name = "NtClose",
+      name = "NtCloseHook",
       onEntry = NtClose_onEntry
     }
   }

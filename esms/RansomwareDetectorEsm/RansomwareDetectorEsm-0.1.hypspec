@@ -1,0 +1,28 @@
+{
+  "name": "RansomwareDetectorEsm",
+  "ver": "0.1",
+  "type": "esm",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "nt": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "service"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "dependencies": {
+    "ProcessCreateFromDownloadedFileEsm": ">= 0.1",
+    "CryptoMonitorProbe": ">= 0.1"
+  },
+  "src": [
+    "RansomwareDetectorEsm.lua"
+  ]
+}
