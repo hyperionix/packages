@@ -17,7 +17,7 @@ end
 local CryptGenKey_onExit = function(context)
   if context.retval ~= 0 then
     Event(
-      "CryptoKeyGenerate",
+      "CryptoKeyGenerateEvent",
       {
         actorProcess = CurrentProcessEntity,
         key = CryptoKeyEntity.fromHandle(context.p.phKey[0], context.p.dwFlags)
@@ -34,12 +34,12 @@ end
 local CryptImportKey_onExit = function(context)
   if context.retval ~= 0 then
     Event(
-      "CryptoKeyImport",
+      "CryptoKeyImportEvent",
       {
-        process = CurrentProcessEntity,
+        actorProcess = CurrentProcessEntity,
         key = CryptoKeyEntity.fromHandle(context.p.phKey[0], context.p.dwFlags)
       }
-    )
+    ):send(EventChannel.splunk)
   end
 end
 
@@ -54,12 +54,12 @@ end
 local CryptExportKey_onExit = function(context)
   if context.retval ~= 0 then
     Event(
-      "CryptoKeyExport",
+      "CryptoKeyExportEvent",
       {
-        process = CurrentProcessEntity,
+        actorProcess = CurrentProcessEntity,
         key = CryptoKeyEntity.fromHandle(context.p.hKey, CRYPT_EXPORTABLE)
       }
-    )
+    ):send(EventChannel.splunk)
   end
 end
 

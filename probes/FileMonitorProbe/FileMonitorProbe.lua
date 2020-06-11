@@ -1,7 +1,7 @@
 setfenv(1, require "sysapi-ns")
 local File = require "file.File"
 local time = require "time.time"
-local EntityCache = hp.EntityCache
+local SharedTable = hp.SharedTable
 local FileEntity = hp.FileEntity
 local EventChannel = hp.EventChannel
 local band = bit.band
@@ -13,8 +13,8 @@ local CONSOLE_LOG = hp.Logger:new(LOG_LEVEL, hp.Logger.sink.console)
 local DBG_LOG = hp.Logger:new(LOG_LEVEL, hp.Logger.sink.debug)
 local LOG = DBG_LOG
 
-local AllFilesCache = EntityCache.new("AllFilesCache", 64)
-local FileSizeCache = EntityCache.new("FileSizeCache", 64)
+local AllFilesCache = SharedTable.new("AllFilesCache", "number", 64)
+local FileSizeCache = SharedTable.new("FileSizeCache", "number", 64)
 
 ---@param context EntryExecutionContext
 local NtCreateFile_NtOpenFile_onEntry = function(context)
@@ -26,7 +26,7 @@ local NtCreateFile_NtOpenFile_onExit = function(context)
     local file = File.fromHandle(context.p.FileHandle[0])
     if file and file.deviceType == FILE_DEVICE_DISK and not file:isDirectory() then
       -- check for ADS creation
-      if context.hook == "NtCreateFile" then
+      if context.hook == "NtCreateFileHook" then
         local info = context.p.IoStatusBlock.Information
         if info == FILE_CREATED or info == FILE_OVERWRITTEN then
           -- detecting ADS by ":" (ignoring ":" after drive letter)
@@ -36,7 +36,7 @@ local NtCreateFile_NtOpenFile_onExit = function(context)
               "ADSCreateEvent",
               {
                 actorProcess = CurrentProcessEntity,
-                file = FileEntity.fromSysapiFile(file)
+                file = FileEntity.fromSysapiFile(file):addHashes():build()
               }
             ):send(EventChannel.splunk)
 
@@ -46,7 +46,7 @@ local NtCreateFile_NtOpenFile_onExit = function(context)
                 "FileDownloadEvent",
                 {
                   actorProcess = CurrentProcessEntity,
-                  file = FileEntity.fromFullPath(file.fullPath:sub(1, pos - 1))
+                  file = FileEntity.fromFullPath(file.fullPath:sub(1, pos - 1)):addHashes():build()
                 }
               ):send(EventChannel.splunk)
             end
@@ -55,7 +55,7 @@ local NtCreateFile_NtOpenFile_onExit = function(context)
       end
 
       local options
-      if context.hook == "NtCreateFile" then
+      if context.hook == "NtCreateFileHook" then
         options = context.p.CreateOptions
       else
         options = context.p.OpenOptions
@@ -68,23 +68,23 @@ local NtCreateFile_NtOpenFile_onExit = function(context)
         isDelPending = false
       }
 
-      AllFilesCache:store(flowData, context.p.FileHandle[0])
+      AllFilesCache:add(context.p.FileHandle[0], flowData)
     end
   end
 end
 
 ---@param context EntryExecutionContext
 local NtWriteFile_onEntry = function(context)
-  local flowData = AllFilesCache:lookup(context.p.FileHandle)
+  local flowData = AllFilesCache:get(context.p.FileHandle)
   if flowData then
     if not flowData.write then
       flowData.write = true
-      AllFilesCache:store(flowData, context.p.FileHandle)
+      AllFilesCache:add(context.p.FileHandle, flowData)
       Event(
         "FileWriteEvent",
         {
           actorProcess = CurrentProcessEntity,
-          file = FileEntity.fromHandle(context.p.FileHandle)
+          file = FileEntity.fromTable({handle = context.p.FileHandle, fullPath = flowData.name}):build()
         }
       ):send(EventChannel.splunk)
     end
@@ -94,11 +94,11 @@ end
 
 ---@param context EntryExecutionContext
 local NtReadFile_onEntry = function(context)
-  local flowData = AllFilesCache:lookup(context.p.FileHandle)
+  local flowData = AllFilesCache:get(context.p.FileHandle)
   if flowData then
     if not flowData.read then
       flowData.read = true
-      AllFilesCache:store(flowData, context.p.FileHandle)
+      AllFilesCache:add(context.p.FileHandle, flowData)
     end
     LOG:dbg(context.hook, flowData.name)
   end
@@ -106,12 +106,12 @@ end
 
 ---@param context EntryExecutionContext
 local NtSetInformationFile_onEntry = function(context)
-  local flowData = AllFilesCache:lookup(context.p.FileHandle)
+  local flowData = AllFilesCache:get(context.p.FileHandle)
   if flowData then
     local infoClass = context.p.FileInformationClass
 
     if infoClass == ffi.C.FileRenameInformation or infoClass == ffi.C.FileRenameInformationEx then
-      srcFileEntity = FileEntity.fromHandle(context.p.FileHandle)
+      srcFileEntity = FileEntity.fromHandle(context.p.FileHandle):build()
       return
     elseif infoClass == ffi.C.FileDispositionInformation or infoClass == ffi.C.FileDispositionInformationEx then
       return
@@ -140,13 +140,13 @@ local NtSetInformationFile_onExit = function(context)
         {
           actorProcess = CurrentProcessEntity,
           file = srcFileEntity,
-          dstFile = FileEntity.fromHandle(context.p.FileHandle)
+          dstFile = FileEntity.fromHandle(context.p.FileHandle):build()
         }
       ):send(EventChannel.splunk)
     end
   elseif infoClass == ffi.C.FileDispositionInformation or infoClass == ffi.C.FileDispositionInformationEx then
     if NT_SUCCESS(context.retval) then
-      local flowData = AllFilesCache:lookup(context.p.FileHandle)
+      local flowData = AllFilesCache:get(context.p.FileHandle)
       if flowData then
         local isDelOnClose = flowData.isDelOnClose
         local isDelPending = flowData.isDelPending
@@ -170,7 +170,7 @@ local NtSetInformationFile_onExit = function(context)
         if flowData.isDelOnClose ~= isDelOnClose or flowData.isDelPending ~= isDelPending then
           flowData.isDelOnClose = isDelOnClose
           flowData.isDelPending = isDelPending
-          AllFilesCache:store(flowData, context.p.FileHandle)
+          AllFilesCache:add(context.p.FileHandle, flowData)
         end
       end
     end
@@ -181,7 +181,7 @@ local NtSetInformationFile_onExit = function(context)
       local createTime = info.CreationTime.QuadPart
 
       if createTime > 0 or writeTime > 0 then
-        local fileEntity = FileEntity.fromHandle(context.p.FileHandle)
+        local fileEntity = FileEntity.fromHandle(context.p.FileHandle):build()
 
         if createTime > 0 then
           Event(
@@ -213,16 +213,16 @@ end
 
 ---@param context EntryExecutionContext
 local NtClose_onEntry = function(context)
-  local flowData = AllFilesCache:lookup(context.p.Handle)
+  local flowData = AllFilesCache:get(context.p.Handle)
   if flowData then
     if flowData.read or flowData.write then
-      local file = File.fromHandle(context.p.Handle)
+      local file = File.fromTable({handle = context.p.Handle, fullPath = flowData.name})
       local cacheKey = ffi.cast("void*", file.size)
-      local sizeData = FileSizeCache:lookup(cacheKey)
+      local sizeData = FileSizeCache:get(cacheKey)
       if not sizeData then
         -- Create file entity for closed file here
-        local fileEntity = FileEntity.fromSysapiFile(file)
-        FileSizeCache:store({name = flowData.name, devChars = flowData.devChars, fileEntity = fileEntity}, cacheKey)
+        local fileEntity = FileEntity.fromSysapiFile(file):build()
+        FileSizeCache:add(cacheKey, {name = flowData.name, devChars = flowData.devChars, fileEntity = fileEntity})
       else
         local srcFilePath, dstFilePath, srcFile, dstFile, dstDevChars, dstFileEntity, srcFileEntity
         if flowData.read then
@@ -246,11 +246,11 @@ local NtClose_onEntry = function(context)
           if srcFile then
             -- typical case for file copy
             -- in this case we already have dstFileEntity created on close of the file
-            srcFileEntity = FileEntity.fromSysapiFile(srcFile)
+            srcFileEntity = FileEntity.fromSysapiFile(srcFile):build()
           else
             -- in this case we have srcFileEntity
             assert(dstFile)
-            dstFileEntity = FileEntity.fromSysapiFile(dstFile)
+            dstFileEntity = FileEntity.fromSysapiFile(dstFile):build()
           end
 
           LOG:dbg(srcFilePath, " -> ", dstFilePath)
@@ -296,7 +296,7 @@ local NtClose_onEntry = function(context)
         "FileDeleteEvent",
         {
           actorProcess = CurrentProcessEntity,
-          file = FileEntity.fromHandle(context.p.Handle)
+          file = FileEntity.fromHandle(context.p.Handle):build()
         }
       ):send(EventChannel.splunk)
     end
@@ -309,32 +309,32 @@ Probe {
   name = "FileMonitorProbe",
   hooks = {
     {
-      name = "NtCreateFile",
+      name = "NtCreateFileHook",
       onEntry = NtCreateFile_NtOpenFile_onEntry,
       onExit = NtCreateFile_NtOpenFile_onExit
     },
     {
-      name = "NtOpenFile",
+      name = "NtOpenFileHook",
       onEntry = NtCreateFile_NtOpenFile_onEntry,
       onExit = NtCreateFile_NtOpenFile_onExit
     },
     {
-      name = "NtWriteFile",
+      name = "NtWriteFileHook",
       onEntry = NtWriteFile_onEntry
       -- onExit = NtWriteFile_onExit
     },
     {
-      name = "NtReadFile",
+      name = "NtReadFileHook",
       onEntry = NtReadFile_onEntry
       -- onExit = NtReadFile_onExit
     },
     {
-      name = "NtSetInformationFile",
+      name = "NtSetInformationFileHook",
       onEntry = NtSetInformationFile_onEntry,
       onExit = NtSetInformationFile_onExit
     },
     {
-      name = "NtClose",
+      name = "NtCloseHook",
       onEntry = NtClose_onEntry
     }
   }

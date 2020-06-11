@@ -5,7 +5,8 @@ local Registry = require "registry.RegKey"
 
 local package = Package "RegistryMonitorProbe"
 
-Case("RegistryMonitorProbe") {
+-- Should be executed from Administrator
+Case("DISABLED_RegistryMonitorProbe") {
   case = function()
     local TEMP_KEY_PATH = "SOFTWARE"
     local TEMP_SUBKEY_NAME = "RegProbeTest"

@@ -1,0 +1,30 @@
+{
+  "name": "UsersMonitorProbe",
+  "ver": "0.1",
+  "type": "probe",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "nt": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "dependencies": {
+    "NetUserAddHook": ">= 0.1",
+    "NetUserDelHook": ">= 0.1",
+    "NetUserEnumHook": ">= 0.1",
+    "NetUserChangePasswordHook": ">= 0.1"
+  },
+  "src": [
+    "UsersMonitorProbe.lua"
+  ]
+}

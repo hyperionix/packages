@@ -19,13 +19,13 @@
     ]
   },
   "dependencies": {
-    "NtCreateUserProcess": ">= 0.1",
+    "NtCreateUserProcessHook": ">= 0.1",
     "NtTerminateProcessHook": ">= 0.1",
     "NtOpenProcessHook": ">= 0.1",
     "NtSetInformationProcessHook": ">= 0.1",
     "NtSuspendProcessHook": ">= 0.1",
     "NtDebugActiveProcessHook": ">= 0.1",
-    "NtAllocateVirtualMemory": ">= 0.1",
+    "NtAllocateVirtualMemoryHook": ">= 0.1",
     "NtProtectVirtualMemoryHook": ">= 0.1"
   },
   "src": [

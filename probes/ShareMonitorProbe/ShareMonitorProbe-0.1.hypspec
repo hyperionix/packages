@@ -1,0 +1,31 @@
+{
+  "name": "ShareMonitorProbe",
+  "ver": "0.1",
+  "type": "probe",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "nt": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "dependencies": {
+    "NetShareEnumHook": ">= 0.1",
+    "NetShareAddHook": ">= 0.1",
+    "NetShareDelHook": ">= 0.1",
+    "NetShareDelExHook": ">= 0.1",
+    "NetShareCheckHook": ">= 0.1"
+  },
+  "src": [
+    "ShareMonitorProbe.lua"
+  ]
+}

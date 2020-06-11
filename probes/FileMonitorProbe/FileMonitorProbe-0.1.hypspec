@@ -19,12 +19,12 @@
     ]
   },
   "dependencies": {
-    "NtCreateFile": ">= 0.1",
-    "NtOpenFile": ">= 0.1",
-    "NtWriteFile": ">= 0.1",
-    "NtReadFile": ">= 0.1",
-    "NtSetInformationFile": ">= 0.1",
-    "NtClose": ">= 0.1"
+    "NtCreateFileHook": ">= 0.1",
+    "NtOpenFileHook": ">= 0.1",
+    "NtWriteFileHook": ">= 0.1",
+    "NtReadFileHook": ">= 0.1",
+    "NtSetInformationFileHook": ">= 0.1",
+    "NtCloseHook": ">= 0.1"
   },
   "src": [
     "FileMonitorProbe.lua"

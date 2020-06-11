@@ -1,0 +1,29 @@
+{
+  "name": "NtQueryDirectoryFileExHook",
+  "ver": "0.1",
+  "type": "hook",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "windows": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "description": {
+    "summary": "ntdll!NtQueryDirectoryFileEx hook",
+    "details": "Package for patching ntdll!NtQueryDirectoryFileEx function",
+    "license": "MIT"
+  },
+  "src": [
+    "NtQueryDirectoryFileExHook.lua"
+  ]
+}
