@@ -128,33 +128,6 @@ local NtDebugActiveProcess_onExit = function(context)
   end
 end
 
----@param context EntryExecutionContext
-local NtAllocateVirtualMemory_onEntry = function(context)
-  if band(context.p.AllocationType, MEM_COMMIT) ~= 0 then
-    if not Process.isCurrentProcess(context.p.ProcessHandle) then
-      return
-    end
-  end
-
-  context:skipExitHook()
-end
-
----@param context ExitExecutionContext
-local NtAllocateVirtualMemory_onExit = function(context)
-  if NT_SUCCESS(context.p.retval) then
-    Event(
-      "ProcessMemoryAllocationEvent",
-      {
-        address = toaddress(context.p.BaseAddress[0]),
-        size = tonumber(context.p.RegionSize[0]),
-        protect = tonumber(context.p.Protect),
-        actorProcess = CurrentProcessEntity,
-        process = ProcessEntity.fromHandle(context.p.ProcessHandle):build()
-      }
-    ):send(EventChannel.splunk)
-  end
-end
-
 Probe {
   name = "ProcessMonitorProbe",
   hooks = {
@@ -182,11 +155,6 @@ Probe {
       name = "NtDebugActiveProcessHook",
       onEntry = NtDebugActiveProcess_onEntry,
       onExit = NtDebugActiveProcess_onExit
-    },
-    {
-      name = "NtAllocateVirtualMemoryHook",
-      onEntry = NtAllocateVirtualMemory_onEntry,
-      onExit = NtAllocateVirtualMemory_onExit
     }
   }
 }
