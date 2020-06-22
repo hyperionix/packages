@@ -336,6 +336,23 @@ Probe {
     {
       name = "NtCloseHook",
       onEntry = NtClose_onEntry
+    },
+    {
+      name = "URLDownloadToFileWHook",
+      onEntry = function(context)
+      end,
+      onExit = function(context)
+        if context.retval == S_OK then
+          Event(
+            "FileDownloadEvent",
+            {
+              actorProcess = CurrentProcessEntity,
+              file = FileEntity.fromFullPath(string.fromWC(context.p.szFileName)):addHashes():build(),
+              url = string.fromWC(context.p.szURL)
+            }
+          )
+        end
+      end
     }
   }
 }
