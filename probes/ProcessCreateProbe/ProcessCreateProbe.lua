@@ -17,7 +17,7 @@ local NtCreateUserProcess_onExit = function(context)
         process = processEntity,
         actorProcess = CurrentProcessEntity
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 

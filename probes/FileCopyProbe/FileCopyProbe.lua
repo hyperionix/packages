@@ -143,7 +143,7 @@ local NtClose_onEntry = function(context)
                   dstFile = dstFileEntity,
                   remoteType = remoteType
                 }
-              ):send(EventChannel.file)
+              )
             end
           end
         end

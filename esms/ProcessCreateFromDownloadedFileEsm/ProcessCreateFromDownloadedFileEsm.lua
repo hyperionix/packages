@@ -73,7 +73,7 @@ Esm {
                   actorProcess = event.actorProcess,
                   process = event.process
                 }
-              ):send(EventChannel.splunk, EventChannel.file)
+              )
             end
           end
         }

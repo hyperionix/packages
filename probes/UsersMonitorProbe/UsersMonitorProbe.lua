@@ -32,7 +32,7 @@ local NetUserAdd_onExit = function(context)
         password = info.usri1_password and string.fromWC(info.usri1_password) or "",
         privileges = PRIV_LEVELS_NAMES[info.usri1_priv]
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -50,7 +50,7 @@ local NetUserEnum_onExit = function(context)
         actorProcess = CurrentProcessEntity,
         server = context.p.servername and string.fromWC(context.p.servername) or "local computer"
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -68,7 +68,7 @@ local NetUserDel_onExit = function(context)
         server = context.p.servername and string.fromWC(context.p.servername) or "local computer",
         user = string.fromWC(context.p.username)
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -88,7 +88,7 @@ local NetUserChangePassword_onExit = function(context)
         oldPassword = string.fromWC(context.p.oldpassword),
         newPassword = string.fromWC(context.p.newpassword)
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 

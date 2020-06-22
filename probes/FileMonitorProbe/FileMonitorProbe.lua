@@ -38,7 +38,7 @@ local NtCreateFile_NtOpenFile_onExit = function(context)
                 actorProcess = CurrentProcessEntity,
                 file = FileEntity.fromSysapiFile(file):addHashes():build()
               }
-            ):send(EventChannel.splunk)
+            )
 
             local adsName = file.fullPath:sub(pos + 1)
             if adsName == "Zone.Identifier" then
@@ -48,7 +48,7 @@ local NtCreateFile_NtOpenFile_onExit = function(context)
                   actorProcess = CurrentProcessEntity,
                   file = FileEntity.fromFullPath(file.fullPath:sub(1, pos - 1)):addHashes():build()
                 }
-              ):send(EventChannel.splunk)
+              )
             end
           end
         end
@@ -86,7 +86,7 @@ local NtWriteFile_onEntry = function(context)
           actorProcess = CurrentProcessEntity,
           file = FileEntity.fromTable({handle = context.p.FileHandle, fullPath = flowData.name}):build()
         }
-      ):send(EventChannel.splunk)
+      )
     end
     LOG:dbg(context.hook, flowData.name)
   end
@@ -142,7 +142,7 @@ local NtSetInformationFile_onExit = function(context)
           file = srcFileEntity,
           dstFile = FileEntity.fromHandle(context.p.FileHandle):build()
         }
-      ):send(EventChannel.splunk)
+      )
     end
   elseif infoClass == ffi.C.FileDispositionInformation or infoClass == ffi.C.FileDispositionInformationEx then
     if NT_SUCCESS(context.retval) then
@@ -192,7 +192,7 @@ local NtSetInformationFile_onExit = function(context)
               tsBefore = timeBefore.createTime,
               tsAfter = time.toUnixTimestamp(createTime)
             }
-          ):send(EventChannel.splunk)
+          )
         end
 
         if writeTime > 0 then
@@ -204,7 +204,7 @@ local NtSetInformationFile_onExit = function(context)
               tsBefore = timeBefore.writeTime,
               tsAfter = time.toUnixTimestamp(writeTime)
             }
-          ):send(EventChannel.splunk)
+          )
         end
       end
     end
@@ -262,7 +262,7 @@ local NtClose_onEntry = function(context)
               file = srcFileEntity,
               dstFile = dstFileEntity
             }
-          ):send(EventChannel.splunk)
+          )
 
           if dstDevChars then
             local remoteType
@@ -281,7 +281,7 @@ local NtClose_onEntry = function(context)
                   dstFile = dstFileEntity,
                   remoteType = remoteType
                 }
-              ):send(EventChannel.splunk)
+              )
             end
           end
         end
@@ -298,7 +298,7 @@ local NtClose_onEntry = function(context)
           actorProcess = CurrentProcessEntity,
           file = FileEntity.fromHandle(context.p.Handle):build()
         }
-      ):send(EventChannel.splunk)
+      )
     end
 
     AllFilesCache:delete(context.p.Handle)

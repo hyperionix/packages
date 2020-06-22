@@ -45,7 +45,7 @@ Esm {
                   key = event.key,
                   keyType = event.type
                 }
-              ):send(EventChannel.splunk, EventChannel.file)
+              )
 
               local process = Process.open(event.actorProcess.pid, PROCESS_TERMINATE)
               if process then
@@ -54,7 +54,7 @@ Esm {
                   {
                     process = event.actorProcess
                   }
-                ):send(EventChannel.splunk, EventChannel.file)
+                )
                 process:terminate()
               end
               state:finalize()
