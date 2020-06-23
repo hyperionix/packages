@@ -33,7 +33,13 @@ Esm {
           eventName = "ProcessCreateEvent",
           -- A process was created from the file entity. Consider such processes to be potentially suspicious and generate an event
           action = function(state, event)
-            Event("ProcessCreateFromDownloadedFileEvent"):send(EventChannel.splunk)
+            Event(
+              "ProcessCreateFromDownloadedFileEvent",
+              {
+                process = event.process,
+                actorProcess = event.actorProcess
+              }
+            ):send(EventChannel.splunk)
           end,
           -- When provided keyFn will be used to compute the event key and
           -- would only trigger actions on those states that match it
