@@ -9,6 +9,7 @@ local LOG = DBG_LOG
 
 Esm {
   name = "RansomwareDetectorEsm",
+  debug = 0,
   probes = {
     {
       name = "ProcessCreateFromDownloadedFileEsm"
@@ -22,11 +23,9 @@ Esm {
       name = "initial",
       triggers = {
         {
-          event = "ProcessCreateFromDownloadedFileEvent",
-          action = function(state, entity, event)
-            if entity.eid == event.process.eid then
-              state:transition("SuspiciousProcessCreateState")
-            end
+          eventName = "ProcessCreateFromDownloadedFileEvent",
+          action = function(state, event)
+            state:transition(event.process.pid, "SuspiciousProcessCreateState")
           end
         }
       }
@@ -35,40 +34,46 @@ Esm {
       name = "SuspiciousProcessCreateState",
       triggers = {
         {
-          event = "CryptoKeyExportEvent",
-          action = function(state, entity, event)
-            if entity.eid == event.actorProcess.eid then
-              Alert(
-                "RansomwareDetectedEvent",
+          eventName = "CryptoKeyExportEvent",
+          action = function(state, event)
+            Alert(
+              "RansomwareDetectedEvent",
+              {
+                process = event.actorProcess,
+                key = event.key,
+                keyType = event.type
+              }
+            ):send(EventChannel.splunk)
+            local process = Process.open(event.actorProcess.pid, PROCESS_TERMINATE)
+            if process then
+              Event(
+                "RansomwareProcessTerminatedEvent",
                 {
-                  process = event.actorProcess,
-                  key = event.key,
-                  keyType = event.type
+                  process = event.actorProcess
                 }
-              )
-
-              local process = Process.open(event.actorProcess.pid, PROCESS_TERMINATE)
-              if process then
-                Event(
-                  "RansomwareProcessTerminatedEvent",
-                  {
-                    process = event.actorProcess
-                  }
-                )
-                process:terminate()
-              end
-              state:finalize()
+              ):send(EventChannel.splunk)
+              process:terminate()
             end
+            state:finalize()
+          end,
+          keyFn = function(event)
+            return event.actorProcess.pid
           end
         },
         {
-          event = "CryptoKeyImportEvent",
+          eventName = "CryptoKeyImportEvent",
           action = function(state, entity, event)
+          end,
+          keyFn = function(event)
+            return event.actorProcess.pid
           end
         },
         {
-          event = "CryptoKeyExportEvent",
+          eventName = "CryptoKeyExportEvent",
           action = function(state, entity, event)
+          end,
+          keyFn = function(event)
+            return event.actorProcess.pid
           end
         }
       }
