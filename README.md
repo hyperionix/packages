@@ -46,7 +46,7 @@
 | Raw Disk Write Access|:heavy_check_mark:|:heavy_check_mark:|
 | Scheduled Probes|
 | Services List|:heavy_check_mark:|:heavy_check_mark:|
-| ESMs|
+| **ESMs**|
 | Ransomware Detected|:heavy_check_mark:|:x:|
 | Suspicious Process Created 1|:heavy_check_mark:|:x:|
 
