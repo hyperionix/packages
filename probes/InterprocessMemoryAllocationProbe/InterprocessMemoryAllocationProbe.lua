@@ -23,7 +23,7 @@ local NtAllocateVirtualMemory_onExit = function(context)
         actorProcess = CurrentProcessEntity,
         targetProcess = ProcessEntity.fromHandle(context.p.ProcessHandle):build()
       }
-    ):send(EventChannel.file, EventChannel.splunk)
+    )
   end
 end
 

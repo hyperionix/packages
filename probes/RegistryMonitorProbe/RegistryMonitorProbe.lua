@@ -75,7 +75,7 @@ local NtSetValueKey_onExit = function(context)
           dataType = tonumber(context.p.Type),
           dataSize = tonumber(context.p.DataSize)
         }
-      ):send(EventChannel.splunk)
+      )
     end
   end
 end
@@ -109,7 +109,7 @@ local NtDeleteKey_NtDeleteValueKey_onExit = function(context)
           key = flowData.name,
           value = value
         }
-      ):send(EventChannel.file, EventChannel.splunk)
+      )
     end
   end
 end

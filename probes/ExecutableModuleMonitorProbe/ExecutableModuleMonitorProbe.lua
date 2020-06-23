@@ -31,7 +31,7 @@ local function LdrLoadDll_onExit(context)
         module = getModuleFullPath(context.p.ModuleHandle[0]),
         process = CurrentProcessEntity
       }
-    ):send(EventChannel.file, EventChannel.splunk)
+    )
   end
 end
 
@@ -49,7 +49,7 @@ local function LdrUnloadDll_onExit(context)
         module = modPath,
         process = CurrentProcessEntity
       }
-    ):send(EventChannel.file, EventChannel.splunk)
+    )
   end
 end
 

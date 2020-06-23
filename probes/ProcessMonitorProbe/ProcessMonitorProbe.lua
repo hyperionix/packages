@@ -32,7 +32,7 @@ local NtCreateUserProcess_onExit = function(context)
         process = processEntity,
         actorProcess = CurrentProcessEntity
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -63,7 +63,7 @@ local NtOpenProcess_onExit = function(context)
         process = ProcessEntity.fromPid(toaddress(context.p.ClientId.UniqueProcess)):build(),
         access = stringify.mask(context.p.DesiredAccess, PROCESS_ACCESS_STR)
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -90,7 +90,7 @@ local NtSetInformationProcess_onExit = function(context)
         process = ProcessEntity.fromHandle(context.p.ProcessHandle):build(),
         infoType = tonumber(context.p.ProcessInformationClass)
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -107,7 +107,7 @@ local NtSuspendProcess_onExit = function(context)
         actorProcess = CurrentProcessEntity,
         process = ProcessEntity.fromHandle(context.p.ProcessHandle):build()
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -124,7 +124,7 @@ local NtDebugActiveProcess_onExit = function(context)
         actorProcess = CurrentProcessEntity,
         process = ProcessEntity.fromHandle(context.p.ProcessHandle):build()
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 

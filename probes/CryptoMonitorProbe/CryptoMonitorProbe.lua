@@ -22,7 +22,7 @@ local CryptGenKey_onExit = function(context)
         actorProcess = CurrentProcessEntity,
         key = CryptoKeyEntity.fromHandle(context.p.phKey[0], context.p.dwFlags)
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -39,7 +39,7 @@ local CryptImportKey_onExit = function(context)
         actorProcess = CurrentProcessEntity,
         key = CryptoKeyEntity.fromHandle(context.p.phKey[0], context.p.dwFlags)
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -59,7 +59,7 @@ local CryptExportKey_onExit = function(context)
         actorProcess = CurrentProcessEntity,
         key = CryptoKeyEntity.fromHandle(context.p.hKey, CRYPT_EXPORTABLE)
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 

@@ -45,7 +45,7 @@ local onExit = function(context)
         targetName = targetName,
         actorProcess = CurrentProcessEntity
       }
-    ):send(EventChannel.file, EventChannel.splunk)
+    )
   end
 end
 

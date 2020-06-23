@@ -28,7 +28,7 @@ ScheduledProbe {
 
       mgr:close()
 
-      Event("Services List", {services = services}):send(EventChannel.splunk, EventChannel.file)
+      Event("Services List", {services = services})
     end
   end
 }

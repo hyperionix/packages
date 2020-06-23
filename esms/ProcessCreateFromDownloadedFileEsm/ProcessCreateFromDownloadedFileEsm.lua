@@ -1,18 +1,15 @@
 local EventChannel = hp.EventChannel
 
-local LOG_LEVEL = 0
-local CONSOLE_LOG = hp.Logger:new(LOG_LEVEL, hp.Logger.sink.console)
-local DBG_LOG = hp.Logger:new(LOG_LEVEL, hp.Logger.sink.debug)
-local LOG = CONSOLE_LOG
-
 Esm {
   name = "ProcessCreateFromDownloadedFileEsm",
+  -- if > 0 turns on ESM debug mode
+  debug = 0,
   probes = {
     {
       name = "FileMonitorProbe"
     },
     {
-      name = "ProcessCreateProbe"
+      name = "ProcessMonitorProbe"
     }
   },
   states = {
@@ -20,61 +17,60 @@ Esm {
       name = "initial",
       triggers = {
         {
-          event = "FileDownloadEvent",
-          action = function(state, entity, event)
-            if entity.eid == event.file.eid then
-              state:transition("FileDownloadState")
-            end
+          eventName = "FileDownloadEvent",
+          -- initial event doesn't need keyFn.  It applies to any matching event regardless of its key value
+          action = function(state, event)
+            -- Transition to the FileDownloadState with the given id if it doesn't yet exist
+            state:transition(event.file.eid, "FileDownloadedState")
           end
         }
       }
     },
     {
-      name = "FileDownloadState",
+      name = "FileDownloadedState",
       triggers = {
         {
-          event = "FileMoveEvent",
-          action = function(state, entity, event)
-            if entity.eid == event.srcFile.eid then
-              -- DBG:dbg("222")
-              -- We don't care about source file entity as it was renamed
-              state:finalize()
-              -- File created by browser was moved. Create entity in current state for new file entity
-              local state = createEntityState(event.dstFile)
-              state:transition("FileDownloadState")
-            end
+          eventName = "ProcessCreateEvent",
+          -- A process was created from the file entity. Consider such processes to be potentially suspicious and generate an event
+          action = function(state, event)
+            Event("ProcessCreateFromDownloadedFileEvent"):send(EventChannel.splunk)
+          end,
+          -- When provided keyFn will be used to compute the event key and
+          -- would only trigger actions on those states that match it
+          keyFn = function(event)
+            return event.process.backingFile.eid
           end
         },
         {
-          event = "FileCopyEvent",
-          action = function(state, entity, event)
-            if entity.eid == event.srcFile.eid then
-              -- File created by browser was copied. Create entity in current state for new file entity
-              local state = createEntityState(event.dstFile)
-              state:transition("FileDownloadState")
-            end
-          end
-        },
-        {
-          event = "FileDeleteEvent",
-          action = function(state, entity, event)
+          eventName = "FileDeleteEvent",
+          action = function(state, event)
             -- File created by browser was deleted. Forget about it.
             state:finalize()
+          end,
+          keyFn = function(event)
+            return event.file.eid
           end
         },
         {
-          event = "ProcessCreateEvent",
-          action = function(state, entity, event)
-            -- A process was created from the file entity. Consider such processes as potential suspicious.
-            if entity.eid == event.process.backingFile.eid then
-              Alert(
-                "ProcessCreateFromDownloadedFileEvent",
-                {
-                  actorProcess = event.actorProcess,
-                  process = event.process
-                }
-              ):send(EventChannel.splunk, EventChannel.file)
-            end
+          eventName = "FileCopyEvent",
+          action = function(state, event)
+            -- File created by browser was copied.
+            -- state:spawn() is just like transition(), but will create
+            -- a copy of the ESM state with the original one still being available.
+            state:spawn(event.dstFile.eid, "FileDownloadedState")
+          end,
+          keyFn = function(event)
+            return event.file.eid
+          end
+        },
+        {
+          eventName = "FileMoveEvent",
+          action = function(state, event)
+            -- Transition the current state object to the same state with new ID and data
+            state:transition(event.dstFile.eid, "FileDownloadedState")
+          end,
+          keyFn = function(event)
+            return event.file.eid
           end
         }
       }

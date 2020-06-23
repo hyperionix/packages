@@ -21,7 +21,7 @@ local NtDeviceIoControlFile_onExit = function(context)
         outBufferSize = toaddress(context.p.OutputBufferLength),
         actorProcess = CurrentProcessEntity
       }
-    ):send(EventChannel.file, EventChannel.splunk)
+    )
   end
 end
 

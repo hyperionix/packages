@@ -30,7 +30,7 @@ local NetShareEnum_onExit = function(context)
         actorProcess = CurrentProcessEntity,
         server = context.p.servername and string.fromWC(context.p.servername) or "local computer"
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -54,7 +54,7 @@ local NetShareAdd_onExit = function(context)
         temp = band(info.shi2_type, STYPE_TEMPORARY) ~= 0,
         special = band(info.shi2_type, STYPE_SPECIAL) ~= 0
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -80,7 +80,7 @@ local NetShareDel_onExit = function(context)
         server = context.p.servername and string.fromWC(context.p.servername) or "local computer",
         shareName = shareName
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 
@@ -98,7 +98,7 @@ local NetShareCheck_onExit = function(context)
         server = context.p.servername and string.fromWC(context.p.servername) or "local computer",
         sharePath = string.fromWC(context.p.device)
       }
-    ):send(EventChannel.splunk)
+    )
   end
 end
 

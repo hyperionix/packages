@@ -24,7 +24,8 @@
     "NtWriteFileHook": ">= 0.1",
     "NtReadFileHook": ">= 0.1",
     "NtSetInformationFileHook": ">= 0.1",
-    "NtCloseHook": ">= 0.1"
+    "NtCloseHook": ">= 0.1",
+    "URLDownloadToFileWHook": ">= 0.1"
   },
   "src": [
     "FileMonitorProbe.lua"
