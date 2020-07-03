@@ -1,0 +1,43 @@
+{
+  "name": "ServiceMonitorProbe",
+  "ver": "0.1",
+  "type": "probe",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "nt": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "dependencies": {
+    "CreateServiceAHook": ">= 0.1",
+    "CreateServiceWHook": ">= 0.1",
+    "OpenServiceAHook": ">= 0.1",
+    "OpenServiceWHook": ">= 0.1",
+    "CloseServiceHandleHook": ">= 0.1",
+    "DeleteServiceHook": ">= 0.1",
+    "ControlServiceHook": ">= 0.1",
+    "ControlServiceExAHook": ">= 0.1",
+    "ControlServiceExWHook": ">= 0.1",
+    "EnumServicesStatusExAHook": ">= 0.1",
+    "EnumServicesStatusExWHook": ">= 0.1",
+    "EnumServicesStatusAHook": ">= 0.1",
+    "EnumServiceGroupWHook": ">= 0.1",
+    "StartServiceAHook": ">= 0.1",
+    "StartServiceWHook": ">= 0.1",
+    "NtLoadDriverHook": ">= 0.1",
+    "NtUnloadDriverHook": ">= 0.1"
+  },
+  "src": [
+    "ServiceMonitorProbe.lua"
+  ]
+}

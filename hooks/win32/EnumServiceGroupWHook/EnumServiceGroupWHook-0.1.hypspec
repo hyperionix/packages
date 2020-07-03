@@ -1,0 +1,29 @@
+{
+  "name": "EnumServiceGroupWHook",
+  "ver": "0.1",
+  "type": "hook",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "windows": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "description": {
+    "summary": "advapi32!EnumServiceGroupW hook",
+    "details": "Package for patching advapi32!EnumServiceGroupW function",
+    "license": "MIT"
+  },
+  "src": [
+    "EnumServiceGroupWHook.lua"
+  ]
+}

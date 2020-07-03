@@ -1,0 +1,29 @@
+{
+  "name": "CloseServiceHandleHook",
+  "ver": "0.1",
+  "type": "hook",
+  "environment": {
+    "os": [
+      "windows"
+    ],
+    "os_ver": {
+      "windows": [
+        ">= 9600"
+      ]
+    },
+    "engine": [
+      "sensor"
+    ],
+    "agent_ver": [
+      ">= 0.4.0"
+    ]
+  },
+  "description": {
+    "summary": "sechost!CloseServiceHandle hook",
+    "details": "Package for patching sechost!CloseServiceHandle function",
+    "license": "MIT"
+  },
+  "src": [
+    "CloseServiceHandleHook.lua"
+  ]
+}
