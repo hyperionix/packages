@@ -47,7 +47,7 @@ local NtOpenProcess_onEntry = function(context)
     return
   end
 
-  if toaddress(context.p.ClientId.UniqueProcess) == ffi.C.GetCurrentProcessId() then
+  if context.p.ClientId == ffi.NULL or toaddress(context.p.ClientId.UniqueProcess) == ffi.C.GetCurrentProcessId() then
     context:skipExitHook()
     return
   end

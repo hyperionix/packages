@@ -16,8 +16,27 @@ local LOG = DBG_LOG
 local AllFilesCache = SharedTable.new("AllFilesCache", "number", 64)
 local FileSizeCache = SharedTable.new("FileSizeCache", "number", 64)
 
+local PATH_PREFIXES = {"\\??\\", "\\device\\"}
+
 ---@param context EntryExecutionContext
 local NtCreateFile_NtOpenFile_onEntry = function(context)
+  local oa = context.p.ObjectAttributes
+  if oa ~= ffi.NULL and oa.ObjectName ~= ffi.NULL then
+    -- skip volumes, devices, etc
+    objName = string.fromUS(oa.ObjectName)
+    if objName then
+      for _, prefix in pairs(PATH_PREFIXES) do
+        if objName:lower():startswith(prefix) then
+          if not objName:find("\\", #prefix + 1) then
+            context:skipExitHook()
+          end
+          break
+        end
+      end
+    end
+  else
+    context:skipExitHook()
+  end
 end
 
 ---@param context ExitExecutionContext
@@ -25,6 +44,10 @@ local NtCreateFile_NtOpenFile_onExit = function(context)
   if NT_SUCCESS(context.retval) then
     local file = File.fromHandle(context.p.FileHandle[0])
     if file and file.deviceType == FILE_DEVICE_DISK and not file:isDirectory() then
+      if not file.fullPath then
+        DBG:dbg("Could not get fullPath for " .. objName)
+        return
+      end
       -- check for ADS creation
       if context.hook == "NtCreateFileHook" then
         local info = context.p.IoStatusBlock.Information
