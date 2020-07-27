@@ -24,7 +24,8 @@
     "NtOpenProcessHook": ">= 0.1",
     "NtSetInformationProcessHook": ">= 0.1",
     "NtSuspendProcessHook": ">= 0.1",
-    "NtDebugActiveProcessHook": ">= 0.1"
+    "NtDebugActiveProcessHook": ">= 0.1",
+    "NtAllocateVirtualMemoryHook": ">= 0.1"
   },
   "src": [
     "ProcessMonitorProbe.lua"
