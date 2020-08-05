@@ -1,7 +1,7 @@
 ## Packages List
 | Package | HMC Ready | Test |
 |---------|:---------:|:----:|
-| **Hooks**|
+| Hooks|
 | CryptExportKey|:heavy_check_mark:|:x:|
 | CryptGenKey|:heavy_check_mark:|:x:|
 | CryptImportKey|:heavy_check_mark:|:x:|
@@ -24,7 +24,7 @@
 | NtWriteFile|:heavy_check_mark:|:x:|
 | NtWriteVirtualMemory|:heavy_check_mark:|:x:|
 | RtlInitUnicodeString|:heavy_check_mark:|:x:|
-| **Probes**|
+| Probes|
 | Crypto Key Exported|:heavy_check_mark:|:heavy_check_mark:|
 | Crypto Key Generated|:heavy_check_mark:|:heavy_check_mark:|
 | Crypto Key Imported|:heavy_check_mark:|:heavy_check_mark:|
@@ -46,7 +46,7 @@
 | Raw Disk Write Access|:heavy_check_mark:|:heavy_check_mark:|
 | Scheduled Probes|
 | Services List|:heavy_check_mark:|:heavy_check_mark:|
-| **ESMs**|
+| ESMs|
 | Ransomware Detected|:heavy_check_mark:|:x:|
 | Suspicious Process Created 1|:heavy_check_mark:|:x:|
 

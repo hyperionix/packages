@@ -59,6 +59,22 @@ Esm {
           keyFn = function(event)
             return event.actorProcess.pid
           end
+        },
+        {
+          eventName = "CryptoKeyImportEvent",
+          action = function(state, entity, event)
+          end,
+          keyFn = function(event)
+            return event.actorProcess.pid
+          end
+        },
+        {
+          eventName = "CryptoKeyExportEvent",
+          action = function(state, entity, event)
+          end,
+          keyFn = function(event)
+            return event.actorProcess.pid
+          end
         }
       }
     }

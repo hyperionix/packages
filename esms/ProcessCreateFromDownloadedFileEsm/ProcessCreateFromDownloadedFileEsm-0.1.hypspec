@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "FileMonitorProbe": ">= 0.1",
-    "ProcessCreateProbe": ">= 0.1"
+    "ProcessMonitorProbe": ">= 0.1"
   },
   "src": [
     "ProcessCreateFromDownloadedFileEsm.lua"
